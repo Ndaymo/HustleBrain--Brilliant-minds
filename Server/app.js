@@ -1,8 +1,20 @@
 const http=require('http');
 const express= require('express');
 const app= express();
+var cors = require('cors')
+
+ 
+app.get('/products/:id', cors(), function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for a Single Route'})
+})
+ 
+app.listen(8000, function () {
+  console.log('CORS-enabled web server listening on port 80')
+})
+
 const mariadb=require('mariadb') ;
 const dotenv= require('dotenv') ;
+const { stringify } = require('querystring');
 dotenv.config()
 
 const PORT= process.env.PORT || '3000';
@@ -19,6 +31,15 @@ const pool= mariadb.createPool({
 const appWebPage = http.createServer((req,res)=>{
 console.log('Hey');
 })
+//Middlewares
+
+app.use(cors())
+
+app.get('/ideas/', function (req, res, next) {
+    res.json({msg: 'This is CORS-enabled for all origins!'})
+  })
+
+
 
 //Routes
 
@@ -63,6 +84,11 @@ app.use(express.urlencoded({extended:false}))
 
 
 //Listening
-app.listen(PORT, 'localhost', ()=>{
-    console.log(`Listening' ${PORT}`)
+app.listen(PORT, 'localhost', (err)=>{
+    
+    if(err){
+        console.log(err)
+    }else {
+        console.log(`Listening' ${PORT}`)
+    }
 })
