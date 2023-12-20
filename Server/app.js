@@ -13,6 +13,11 @@ app.listen(8000, function () {
   console.log('CORS-enabled web server listening on port 80')
 })
 
+//Middlewares
+app.use(express.json());
+app.use(express.urlencoded({extended:false}))
+
+
 
 const { stringify } = require('querystring');
 dotenv.config()
@@ -48,7 +53,7 @@ app.get("/", async (req, res) => {
     try {
         connection = await pool.getConnection()
         const data = await connection.query(
-            "SELECT * FROM brilliant_Minds.ideas;"
+            "SELECT * FROM brilliant_Minds.ideas order by Date_created desc;"
         )
         res.send(data)
     } catch (error) {
@@ -83,19 +88,13 @@ app.post('/create', async (req,res)=>{
     let connection;
     try {
         connection = await pool.getConnection();
+        const title = req.body.Title;
         const description = req.body.description;
-        const dateCreated = new Date();
-        const formattedDateCreated = dateCreated.toISOString();
 
         const data=  await connection.query
-        ('INSERT INTO ideas (Description, Date_created) VALUES (?, ?);', [description, dateCreated]);
+        ('INSERT INTO ideas (Title, Description) VALUES (?,?);', [title,description]);
     
-        const formattedData = {data,
-            Date_created: formattedDateCreated, // Convert to ISO format
-        };
-
-        res.json(formattedData);
-        return formattedData;
+   
     } catch (error) {
         console.error('Error inserting data:', error);
     res.status(500).send('Internal Server Error');
@@ -103,10 +102,27 @@ app.post('/create', async (req,res)=>{
         if (connection) connection.end();
     }
 });
-
-//Middlewares
-app.use(express.json());
-app.use(express.urlencoded({extended:false}))
+// DELETE route
+app.delete('/ideas/:id', async (req,res)=>{
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const ideaId = req.params.id;
+        const data=  await connection.query
+        ('DELETE FROM ideas WHERE  Idea_id= ?',[ideaId] );
+       
+        if (data.affectedRows === 0) {
+            // No rows were deleted, so the idea with the given ID was not found
+            return res.status(404).send('Idea not found');
+          }
+          res.send('Idea deleted successfully');
+    } catch (error) {
+        console.error('Error inserting data:', error);
+        res.status(500).send('Internal Server Error');
+        } finally {
+            if (connection) connection.end(); 
+    }
+})
 
 
 //Listening
