@@ -2,7 +2,8 @@ const http=require('http');
 const express= require('express');
 const app= express();
 var cors = require('cors')
-
+const mariadb=require('mariadb') ;
+const dotenv= require('dotenv') ;
  
 app.get('/products/:id', cors(), function (req, res, next) {
   res.json({msg: 'This is CORS-enabled for a Single Route'})
@@ -12,8 +13,7 @@ app.listen(8000, function () {
   console.log('CORS-enabled web server listening on port 80')
 })
 
-const mariadb=require('mariadb') ;
-const dotenv= require('dotenv') ;
+
 const { stringify } = require('querystring');
 dotenv.config()
 
@@ -24,7 +24,7 @@ const pool= mariadb.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    connectionLimit: 6
+    connectionLimit: 5,
 });
 
   
@@ -41,7 +41,7 @@ app.get('/ideas/', function (req, res, next) {
 
 
 
-//Routes
+//GET Routes
 
 app.get("/", async (req, res) => {
     let connection;
@@ -77,6 +77,32 @@ app.get("/ideas/:Idea_id", async (req, res) => {
     }
 })
 
+//POST routes
+
+app.post('/create', async (req,res)=>{
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const description = req.body.description;
+        const dateCreated = new Date();
+        const formattedDateCreated = dateCreated.toISOString();
+
+        const data=  await connection.query
+        ('INSERT INTO ideas (Description, Date_created) VALUES (?, ?);', [description, dateCreated]);
+    
+        const formattedData = {data,
+            Date_created: formattedDateCreated, // Convert to ISO format
+        };
+
+        res.json(formattedData);
+        return formattedData;
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    res.status(500).send('Internal Server Error');
+    } finally {
+        if (connection) connection.end();
+    }
+});
 
 //Middlewares
 app.use(express.json());
