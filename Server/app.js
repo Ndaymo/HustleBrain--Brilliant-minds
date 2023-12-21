@@ -22,7 +22,8 @@ app.use(express.urlencoded({extended:false}))
 const { stringify } = require('querystring');
 dotenv.config()
 
-const PORT=3000;
+const PORT=process.env.PORT ||3000;
+const HOST= process.env.HOST ||'localhost';
 
 const pool= mariadb.createPool({
     host: process.env.DB_HOST,

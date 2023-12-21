@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 
 # TCP port
-EXPOSE 3000/tcp
+EXPOSE 3070/tcp
 
 # Define the entry point for the container
 CMD ["node", "app.js"]
