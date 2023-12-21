@@ -22,14 +22,15 @@ app.use(express.urlencoded({extended:false}))
 const { stringify } = require('querystring');
 dotenv.config()
 
-const PORT= process.env.PORT || '3000';
+const PORT=3000;
 
 const pool= mariadb.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
+    port: process.env.DB_PORT,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    connectionLimit: 5,
+    connectionLimit: 10,
 });
 
   
@@ -53,7 +54,7 @@ app.get("/", async (req, res) => {
     try {
         connection = await pool.getConnection()
         const data = await connection.query(
-            "SELECT * FROM brilliant_Minds.ideas order by Date_created desc;"
+            "SELECT * FROM ideas order by Date_created desc;"
         )
         res.send(data)
     } catch (error) {
