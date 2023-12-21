@@ -9,9 +9,9 @@ app.get('/products/:id', cors(), function (req, res, next) {
   res.json({msg: 'This is CORS-enabled for a Single Route'})
 })
  
-app.listen(8000, function () {
-  console.log('CORS-enabled web server listening on port 80')
-})
+// app.listen(8000, function () {
+//   console.log('CORS-enabled web server listening on port 80')
+// })
 
 //Middlewares
 app.use(express.json());
@@ -30,13 +30,13 @@ const pool= mariadb.createPool({
     port: process.env.DB_PORT,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    connectionLimit: 10,
+    connectionLimit: 10
 });
 
   
-const appWebPage = http.createServer((req,res)=>{
-console.log('Hey');
-})
+// const appWebPage = http.createServer((req,res)=>{
+// console.log('Hey');
+// })
 //Middlewares
 
 app.use(cors())
