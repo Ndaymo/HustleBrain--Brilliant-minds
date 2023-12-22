@@ -32,13 +32,21 @@ body{
     margin:5% 0px;
     background-color: blue;
 }
-#wrapper{
+/* #wrapper{
     margin:5px ;
     position: relative;
     display: grid;
     grid-template-columns: 8fr 4fr;
     gap: 1em;
+} */
+
+#wrapper{
+    margin:5px ;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
+
 #wrapper input{
     width: 100%;
     background-color: transparent;
@@ -54,10 +62,28 @@ body{
 }
 #wrapper button{
     position: relative;
+    margin: 1em;
     border-radius: 0.5em;
     font-weight: 500;
     font-size: 1em;
     background-color: rgb(60, 156, 60) ;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color:white;
+}
+#justJoking {
+    border: 1px dotted black;
+    display: grid;
+    grid-template-columns: 10fr 2fr;
+    gap: 1em;
+
+}
+#newJoke {
+    border-radius: 0.5em; 
+    font-weight:300; 
+    font-size: 1em;
+    background-color:rgb(246, 199, 10) ;
     border: none;
     outline: none;
     cursor: pointer;
