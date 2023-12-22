@@ -31,7 +31,7 @@ const pool= mariadb.createPool({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    connectionLimit: 10
+    connectionLimit: 5
 });
 
   
@@ -128,11 +128,7 @@ app.delete('/ideas/:id', async (req,res)=>{
 
 
 //Listening
-app.listen(PORT, 'localhost', (err)=>{
+app.listen(PORT, ()=>{
+      console.log(`Listening' ${PORT}`)
     
-    if(err){
-        console.log(err)
-    }else {
-        console.log(`Listening' ${PORT}`)
-    }
 })
